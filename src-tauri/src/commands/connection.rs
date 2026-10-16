@@ -259,7 +259,7 @@ mod tests {
         let storage = dbx_core::persistence::test_storage::open(&dir.path().join("storage.db")).await.unwrap();
         let state = AppState::new_with_plugin_dir(storage, dir.path().join("plugins"));
         let config = rocketmq_config("session-sk");
-        save_connection_configs(&state, &[config.clone()], Vec::new()).await.unwrap();
+        save_connection_configs(&state, std::slice::from_ref(&config), Vec::new()).await.unwrap();
         let saved = state.storage.load_connections().await.unwrap();
         assert_eq!(state.session_credentials.get("", &config.id).as_deref(), Some("session-sk"));
         let external = saved[0].external_config.as_ref().unwrap();

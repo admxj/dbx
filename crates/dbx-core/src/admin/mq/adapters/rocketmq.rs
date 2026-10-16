@@ -1417,11 +1417,8 @@ mod tests {
             let management_endpoint = listener.local_addr().unwrap().to_string();
             let blackhole = tokio::spawn(async move {
                 let mut streams = Vec::new();
-                loop {
-                    match listener.accept().await {
-                        Ok((stream, _)) => streams.push(stream),
-                        Err(_) => break,
-                    }
+                while let Ok((stream, _)) = listener.accept().await {
+                    streams.push(stream);
                 }
             });
             let mut cfg = rocketmq_config(
